@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gradience Theme Builder + Nautilus CSS</title>
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, sans-serif; 
+      background: #201a1b; 
+      color: #eee; 
+      padding: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1 { 
+      color: #ffb1c9; 
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .panel { 
+      background: #2a2223; 
+      border-radius: 12px; 
+      padding: 1.5rem; 
+      margin-bottom: 1rem; 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .preview-panel {
+      background: #39220e;
+      color: #cdab8f;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .color-preview {
+      display: flex;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .color-item {
+      flex: 1;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    label { 
+      display: block; 
+      margin-top: 1rem; 
+      font-weight: 500;
+    }
+    input[type="color"] { 
+      width: 100%;
+      height: 40px;
+      margin-top: .5rem; 
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: 1px solid #3b2b2f;
+      border-radius: 6px;
+      background: #2a2223;
+      color: #eee;
+    }
+    textarea { 
+      width: 100%; 
+      height: 300px; 
+      margin-top: 1rem; 
+      font-family: 'Fira Code', monospace; 
+      border-radius: 8px; 
+      background: #1a1516;
+      color: #e9dedf;
+      padding: 1rem;
+      border: 1px solid #3b2b2f;
+      resize: vertical;
+    }
+    button { 
+      margin-top: 1rem; 
+      padding: 0.75rem 1.5rem; 
+      border: none; 
+      border-radius: 8px; 
+      background: #ffb1c9; 
+      color: #201a1b; 
+      font-weight: bold; 
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button:hover { 
+      background: #ff91b5; 
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .tip { 
+      background: rgba(255, 177, 201, 0.1); 
+      padding: 0.75rem; 
+      border-radius: 8px; 
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .nautilus-preview {
+      background: #39220e;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+      border: 1px solid #4a3328;
+    }
+    .nautilus-topbar {
+      background: #63452c;
+      padding: 0.5rem 1rem;
+      color: #cdab8f;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nautilus-content {
+      display: flex;
+      height: 200px;
+    }
+    .nautilus-sidebar {
+      width: 30%;
+      background: #63452c;
+      padding: 0.5rem 0;
+    }
+    .nautilus-main {
+      flex: 1;
+      background: #39220e;
+      padding: 1rem;
+      color: #cdab8f;
+    }
+    .sidebar-item {
+      padding: 0.5rem 1rem;
+      color: #cdab8f;
+    }
+    .sidebar-item.selected {
+      background: #7a5540;
+      color: #cdab8f;
+    }
+    h3 {
+      color: #ffb1c9;
+      margin-top: 0;
+      border-bottom: 1px solid #4a3328;
+      padding-bottom: 0.5rem;
+    }
+    .instructions {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(255, 177, 201, 0.1);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gradience Theme Builder (Fixed Nautilus Colors)</h1>
+  
+  <div class="container">
+    <div>
+      <div class="panel">
+        <h3>Color Selection</h3>
+        <label>Preset Name
+          <input type="text" id="preset_name" placeholder="My Custom Theme" value="Brown Elegance">
+        </label>
+        <label>Accent Color
+          <input type="color" id="accent" value="#b5835a">
+        </label>
+        <label>Window Background
+          <input type="color" id="window_bg" value="#39220e">
+        </label>
+        <label>Window Foreground
+          <input type="color" id="window_fg" value="#cdab8f">
+        </label>
+        <label>Sidebar Background
+          <input type="color" id="sidebar_bg" value="#63452c">
+        </label>
+        <label>Sidebar Foreground
+          <input type="color" id="sidebar_fg" value="#cdab8f">
+        </label>
+        <label>Selected Row Background
+          <input type="color" id="selected_bg" value="#7a5540">
+        </label>
+        
+        <div class="tip">
+          💡 <strong>Tip:</strong> Make sure the selected row color is noticeably different from the sidebar background for better visibility.
+        </div>
+      </div>
+      
+      <div class="button-group">
+        <button onclick="generateFullPreset()">Generate Full Preset JSON</button>
+        <button onclick="downloadPreset()">Download Preset JSON</button>
+      </div>
+
+      <div class="instructions">
+        <h3>How to Use This Preset</h3>
+        <ol>
+          <li>Generate your theme with the button above</li>
+          <li>Download the JSON file</li>
+          <li>Open Gradience and click "Import Preset"</li>
+          <li>Select the downloaded JSON file</li>
+          <li>Click "Apply" to apply the theme</li>
+        </ol>
+      </div>
+    </div>
+    
+    <div>
+      <div class="preview-panel">
+        <h3>Color Preview</h3>
+        <div class="color-preview">
+          <div class="color-item" style="background: #39220e; color: #cdab8f;">Window<br>#39220e</div>
+          <div class="color-item" style="background: #63452c; color: #cdab8f;">Sidebar<br>#63452c</div>
+          <div class="color-item" style="background: #7a5540; color: #cdab8f;">Selected<br>#7a5540</div>
+        </div>
+        
+        <h3>Nautilus Preview</h3>
+        <div class="nautilus-preview">
+          <div class="nautilus-topbar">
+            <span>Places</span>
+          </div>
+          <div class="nautilus-content">
+            <div class="nautilus-sidebar">
+              <div class="sidebar-item">Home</div>
+              <div class="sidebar-item">Desktop</div>
+              <div class="sidebar-item selected">Documents</div>
+              <div class="sidebar-item">Pictures</div>
+              <div class="sidebar-item">Music</div>
+              <div class="sidebar-item">Videos</div>
+            </div>
+            <div class="nautilus-main">
+              Documents folder content
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="panel">
+        <h3>Generated JSON</h3>
+        <textarea id="output"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function updateColorPreview() {
+      const window_bg = document.getElementById("window_bg").value;
+      const sidebar_bg = document.getElementById("sidebar_bg").value;
+      const selected_bg = document.getElementById("selected_bg").value;
+      const window_fg = document.getElementById("window_fg").value;
+      const sidebar_fg = document.getElementById("sidebar_fg").value;
+      
+      document.querySelectorAll('.color-preview .color-item')[0].style.background = window_bg;
+      document.querySelectorAll('.color-preview .color-item')[0].style.color = window_fg;
+      document.querySelectorAll('.color-preview .color-item')[0].innerHTML = `Window<br>${window_bg}`;
+      
+      document.querySelectorAll('.color-preview .color-item')[1].style.background = sidebar_bg;
+      document.querySelectorAll('.color-preview .color-item')[1].style.color = sidebar_fg;
+      document.querySelectorAll('.color-preview .color-item')[1].innerHTML = `Sidebar<br>${sidebar_bg}`;
+      
+      document.querySelectorAll('.color-preview .color-item')[2].style.background = selected_bg;
+      document.querySelectorAll('.color-preview .color-item')[2].style.color = sidebar_fg;
+      document.querySelectorAll('.color-preview .color-item')[2].innerHTML = `Selected<br>${selected_bg}`;
+      
+      // Update nautilus preview
+      document.querySelector('.preview-panel').style.background = window_bg;
+      document.querySelector('.preview-panel').style.color = window_fg;
+      document.querySelector('.nautilus-preview').style.background = window_bg;
+      document.querySelector('.nautilus-topbar').style.background = sidebar_bg;
+      document.querySelector('.nautilus-topbar').style.color = sidebar_fg;
+      document.querySelector('.nautilus-sidebar').style.background = sidebar_bg;
+      document.querySelector('.nautilus-main').style.background = window_bg;
+      document.querySelector('.nautilus-main').style.color = window_fg;
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.style.color = sidebar_fg;
+      });
+      document.querySelector('.sidebar-item.selected').style.background = selected_bg;
+      document.querySelector('.sidebar-item.selected').style.color = sidebar_fg;
+    }
+
+    function generateFullPreset(){
+      const presetName = document.getElementById("preset_name").value || "Preset Name";
+      const accent = document.getElementById("accent").value;
+      const window_bg = document.getElementById("window_bg").value;
+      const window_fg = document.getElementById("window_fg").value;
+      const sidebar_bg = document.getElementById("sidebar_bg").value;
+      const sidebar_fg = document.getElementById("sidebar_fg").value;
+      const selected_bg = document.getElementById("selected_bg").value;
+
+      const customCss = `/* Nautilus sidebar background */
+.nautilus-window .sidebar,
+.nautilus-window .sidebar:backdrop,
+.nautilus-window .navigation-sidebar,
+.nautilus-window .navigation-sidebar:backdrop {
+  background-color: ${sidebar_bg};
+  color: ${sidebar_fg};
+}
+
+/* Sidebar selected row - more specific selectors to override default */
+.nautilus-window .sidebar row:selected,
+.nautilus-window .navigation-sidebar row:selected,
+.nautilus-window .sidebar row:selected:backdrop,
+.nautilus-window .navigation-sidebar row:selected:backdrop {
+  background-color: ${selected_bg};
+  color: ${sidebar_fg};
+}
+
+/* Remove default purple selection color */
+.nautilus-window .sidebar row:selected:focus,
+.nautilus-window .navigation-sidebar row:selected:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+/* Fix for Nautilus 43+ */
+.nautilus-window .nautilus-list-view .nautilus-list-item:selected,
+.nautilus-window .nautilus-grid-view .nautilus-grid-item:selected {
+  background-color: ${selected_bg};
+  color: ${sidebar_fg};
+}
+
+/* Window background - FIXED: Now correctly applies window_bg_color */
+.nautilus-window .nautilus-window-content,
+.nautilus-window .nautilus-window-content:backdrop,
+.nautilus-window .view:not(.sidebar),
+.nautilus-window .floating-bar {
+  background-color: ${window_bg};
+  color: ${window_fg};
+}
+
+/* Fix for headerbar in Nautilus */
+.nautilus-window headerbar {
+  background-color: ${sidebar_bg};
+  color: ${sidebar_fg};
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Search bar styling */
+.nautilus-window .search-bar {
+  background-color: ${sidebar_bg};
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure text selection color matches theme */
+.nautilus-window .nautilus-window-content .view:selected {
+  background-color: ${selected_bg};
+  color: ${sidebar_fg};
+}
+
+/* Fix for path bar and location entry */
+.nautilus-window .path-bar-box,
+.nautilus-window .location-entry {
+  background-color: ${window_bg};
+  color: ${window_fg};
+}
+
+/* Fix for the floating status bar */
+.nautilus-window .floating-bar {
+  background-color: ${sidebar_bg};
+  color: ${sidebar_fg};
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+`;
+
+      const preset = {
+        name: presetName,
+        variables: {
+          accent_color: accent,
+          accent_bg_color: accent,
+          accent_fg_color: window_bg,
+          destructive_color: "#ffb4a9",
+          destructive_bg_color: "#930006",
+          destructive_fg_color: "#ffb4a9",
+          success_color: "#efbd93",
+          success_bg_color: "#613f1f",
+          success_fg_color: "#ffdcbe",
+          window_bg_color: window_bg,
+          window_fg_color: window_fg,
+          view_bg_color: window_bg,  // Changed from sidebar_bg to window_bg
+          view_fg_color: window_fg,
+          headerbar_bg_color: sidebar_bg,
+          headerbar_fg_color: sidebar_fg,
+          headerbar_border_color: "rgba(235,224,225,0.8)",
+          card_bg_color: "rgba(255,177,201,0.05)",
+          card_fg_color: sidebar_fg,
+          column1_bg_color: "#50271a",
+          column2_bg_color: "#50271a",
+          column3_bg_color: "#321911",
+          warning_color: "#e2bdc6",
+          warning_bg_color: sidebar_bg,
+          warning_fg_color: sidebar_fg,
+          error_color: "#ffb4a9",
+          error_bg_color: "#930006",
+          error_fg_color: "#ffb4a9",
+          headerbar_backdrop_color: "@window_bg_color",
+          headerbar_shade_color: "rgba(235,224,225,0.07)",
+          sidebar_bg_color: sidebar_bg,
+          sidebar_fg_color: sidebar_fg,
+          sidebar_border_color: sidebar_bg,
+          sidebar_backdrop_color: "@window_bg_color",
+          sidebar_shade_color: "rgba(235,224,225,0.07)",
+          card_shade_color: "rgba(0,0,0,0.07)",
+          thumbnail_bg_color: sidebar_bg,
+          thumbnail_fg_color: sidebar_fg,
+          dialog_bg_color: sidebar_bg,
+          dialog_fg_color: sidebar_fg,
+          popover_bg_color: sidebar_bg,
+          popover_fg_color: sidebar_fg,
+          shade_color: "rgba(0,0,0,0.36)",
+          scrollbar_outline_color: "rgba(158,140,144,0.5)",
+          monet1: "rgb(94,17,50)",
+          monet2: "rgb(66,42,49)",
+          monet3: "rgb(71,41,11)",
+          monet4: "rgb(53,47,48)",
+          monet5: "rgb(57,45,48)",
+          monet6: "rgb(104,0,3)"
+        },
+        palette: {
+          blue_: { "1":"#99c1f1","2":"#62a0ea","3":"#3584e4","4":"#1c71d8","5":"#1a5fb4"},
+          green_: { "1":"#8ff0a4","2":"#57e389","3":"#33d17a","4":"#2ec27e","5":"#26a269"},
+          yellow_: { "1":"#f9f06b","2":"#f8e45c","3":"#f6d32d","4":"#f5c211","5":"#e5a50a"},
+          orange_: { "1":"#ffbe6f","2":"#ffa348","3":"#ff7800","4":"#e66100","5":"#c64600"},
+          red_: { "1":"#f66151","2":"#ed333b","3":"#e01b24","4":"#c01c28","5":"#a51d2d"},
+          purple_: { "1":"#dc8add","2":"#c061cb","3":"#9141ac","4":"#813d9c","5":"#613583"},
+          brown_: { "1":"#cdab8f","2":"#b5835a","3":"#986a44","4":"#865e3c","5":"#63452c"},
+          light_: { "1":"#ffffff","2":"#f6f5f4","3":"#deddda","4":"#c0bfbc","5":"#9a9996"},
+          dark_: { "1":"#77767b","2":"#5e5c64","3":"#3d3846","4":"#241f31","5":"#000000"}
+        },
+        custom_css: {
+          gtk4: customCss,
+          gtk3: ""
+        },
+        plugins: {}
+      };
+
+      document.getElementById("output").value = JSON.stringify(preset, null, 2);
+    }
+
+    function downloadPreset(){
+      const presetName = document.getElementById("preset_name").value || "gradience-preset";
+      const blob = new Blob([document.getElementById("output").value], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${presetName.toLowerCase().replace(/\s+/g, '-')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize with a sample preset
+    window.onload = function() {
+      // Add event listeners to color inputs
+      document.querySelectorAll('input[type="color"]').forEach(input => {
+        input.addEventListener('input', updateColorPreview);
+      });
+      document.getElementById("preset_name").addEventListener('input', function() {
+        if (this.value) {
+          document.querySelector('h1').textContent = `Gradience Theme Builder: ${this.value}`;
+        } else {
+          document.querySelector('h1').textContent = 'Gradience Theme Builder (Fixed Nautilus Colors)';
+        }
+      });
+      
+      generateFullPreset();
+      updateColorPreview();
+    };
+  </script>
+</body>
+</html>

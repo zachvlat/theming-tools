@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>1-Color VSCode Theme Generator</title>
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    label {
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+    input[type=color] {
+      width: 80px;
+      height: 40px;
+      border: none;
+      cursor: pointer;
+    }
+    textarea {
+      width: 100%;
+      height: 400px;
+      margin-top: 1rem;
+      background: #222;
+      color: #eee;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      border: none;
+      resize: vertical;
+    }
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🖌️ 1-Color VSCode Theme Generator</h1>
+
+<label>
+  Pick your base color:
+  <input type="color" id="baseColor" value="#b22222">
+</label>
+
+<textarea id="output" readonly></textarea>
+
+<script>
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+  const bigint = parseInt(hex, 16);
+  return {
+    r: (bigint >> 16) & 255,
+    g: (bigint >> 8) & 255,
+    b: bigint & 255
+  };
+}
+
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(x => {
+    const hex = x.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }).join('');
+}
+
+function adjust(color, percent) {
+  const { r, g, b } = hexToRgb(color);
+  const newR = Math.min(255, Math.max(0, r + percent));
+  const newG = Math.min(255, Math.max(0, g + percent));
+  const newB = Math.min(255, Math.max(0, b + percent));
+  return rgbToHex(newR, newG, newB);
+}
+
+function alphaHex(color, alpha) {
+  const { r, g, b } = hexToRgb(color);
+  const a = Math.round(alpha * 255);
+  return (
+    '#' +
+    [r, g, b, a].map((x) => {
+      const hex = x.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    }).join('')
+  );
+}
+
+function generateTheme(base) {
+  return {
+    "editor.background": adjust(base, -80),
+    "editor.foreground": adjust(base, 100),
+    "editorCursor.foreground": base,
+    "editor.lineHighlightBackground": adjust(base, -60),
+    "editor.selectionBackground": alphaHex(base, 0.4),
+    "editor.inactiveSelectionBackground": alphaHex(base, 0.2),
+    "editor.selectionHighlightBackground": alphaHex(base, 0.25),
+    "editorLineNumber.foreground": adjust(base, 60),
+    "editorLineNumber.activeForeground": adjust(base, 100),
+    "statusBar.background": adjust(base, -90),
+    "statusBar.foreground": adjust(base, 100),
+    "activityBar.background": adjust(base, -80),
+    "activityBar.foreground": adjust(base, 100),
+    "sideBar.background": adjust(base, -85),
+    "sideBar.foreground": adjust(base, 60),
+    "tab.activeBackground": adjust(base, -75),
+    "tab.activeForeground": adjust(base, 120),
+    "tab.inactiveBackground": adjust(base, -85),
+    "tab.inactiveForeground": adjust(base, 50),
+    "titleBar.activeBackground": adjust(base, -75),
+    "titleBar.activeForeground": adjust(base, 120),
+    "titleBar.inactiveBackground": adjust(base, -90),
+    "titleBar.inactiveForeground": adjust(base, 50),
+    "button.background": base,
+    "button.foreground": "#ffffff",
+    "button.hoverBackground": adjust(base, 20),
+    "button.border": adjust(base, -30),
+    "list.activeSelectionBackground": adjust(base, -60),
+    "list.activeSelectionForeground": "#ffffff",
+    "list.hoverBackground": adjust(base, -50),
+    "list.hoverForeground": adjust(base, 100),
+    "list.inactiveSelectionBackground": adjust(base, -70),
+    "list.inactiveSelectionForeground": adjust(base, 80),
+    "list.focusBackground": adjust(base, -45),
+    "list.focusForeground": "#ffffff",
+    "tree.indentGuidesStroke": adjust(base, -40),
+    "tree.tableColumnsBorder": adjust(base, -60),
+    "tab.hoverBackground": adjust(base, -50),
+    "tab.hoverForeground": "#ffffff",
+    "tab.border": adjust(base, -60),
+    "tab.activeBorder": base,
+    "tab.activeBorderTop": base,
+    "editorGroupHeader.tabsBackground": adjust(base, -70),
+    "sideBarSectionHeader.background": adjust(base, -65),
+    "sideBarSectionHeader.foreground": adjust(base, 100),
+    "editorGroup.border": adjust(base, -60),
+    "panel.background": adjust(base, -80),
+    "panel.border": adjust(base, -60),
+    "panelTitle.activeBorder": base,
+    "panelTitle.activeForeground": adjust(base, 100),
+    "panelTitle.inactiveForeground": adjust(base, 60)
+  };
+}
+
+function update() {
+  const baseColor = document.getElementById("baseColor").value;
+  const theme = generateTheme(baseColor);
+  document.getElementById("output").value = JSON.stringify(theme, null, 2);
+}
+
+document.getElementById("baseColor").addEventListener("input", update);
+update();
+</script>
+
+</body>
+</html>

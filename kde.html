@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KDE Plasma Color Scheme Generator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-dark text-light">
+    <!-- Header -->
+    <header class="bg-dark text-center py-3 border-bottom border-secondary">
+        <h1 class="text-light">KDE Plasma Color Scheme Generator</h1>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <p class="text-center">Enter three hex colors to generate a color scheme for KDE Plasma:</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form id="color-form">
+                    <div class="mb-3">
+                        <label for="color1" class="form-label">Outer Window Color (Pick the 2nd darkest Hex, e.g., #bee425):</label>
+                        <input type="text" id="color1" class="form-control" placeholder="#000000">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="color2" class="form-label">Interior Window Color (Pick the 1nd darkest Hex, e.g., #ff5722):</label>
+                        <input type="text" id="color2" class="form-control" placeholder="#000000">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="color3" class="form-label">Accent Color (Pick a light Hex, e.g., #2196f3):</label>
+                        <input type="text" id="color3" class="form-control" placeholder="#000000">
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-success" onclick="generateColors()">Generate Color Scheme</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-center py-3 border-top border-secondary">
+        <p class="mb-0">
+            <a href="https://github.com/zachvlat/kde-color-scheme-generator/" target="_blank" class="text-light text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.54 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.1 0 0 .67-.21 2.2.82a7.548 7.548 0 0 1 4.01 0c1.53-1.03 2.2-.82 2.2-.82.44 1.09.16 1.9.08 2.1.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+            </a>
+        </p>
+    </footer>
+
+    <script>
+        function hexToRgb(hex) {
+            hex = hex.replace("#", "");
+            const bigint = parseInt(hex, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `${r},${g},${b}`;
+        }
+
+        function generateColors() {
+            const color1 = document.getElementById("color1").value.trim();
+            const color2 = document.getElementById("color2").value.trim();
+            const color3 = document.getElementById("color3").value.trim();
+
+            const hexRegex = /^#([A-Fa-f0-9]{6})$/;
+            if (!hexRegex.test(color1) || !hexRegex.test(color2) || !hexRegex.test(color3)) {
+                alert("Please enter valid hex color codes (e.g., #bee425).\nEnsure all fields are correctly formatted.");
+                return;
+            }
+
+            const rgb1 = hexToRgb(color1);
+            const rgb2 = hexToRgb(color2);
+            const rgb3 = hexToRgb(color3);
+
+            const colorScheme = `
+[ColorEffects:Disabled]
+Color=${rgb1}
+ColorAmount=0
+ColorEffect=0
+ContrastAmount=0.65
+ContrastEffect=0
+IntensityAmount=0.1
+IntensityEffect=0
+
+[Colors:Button]
+BackgroundNormal=${rgb2}
+ForegroundNormal=${rgb3}
+
+[Colors:Selection]
+BackgroundNormal=${rgb1}
+ForegroundNormal=${rgb2}
+
+[Colors:View]
+BackgroundNormal=${rgb2}
+ForegroundNormal=${rgb3}
+
+[Colors:Window]
+BackgroundNormal=${rgb1}
+ForegroundNormal=${rgb3}
+
+[General]
+ColorScheme=CustomColorScheme
+Name=CustomColorScheme
+shadeSortColumn=true
+
+[KDE]
+contrast=10
+
+[WM]
+activeBackground=${rgb1}
+activeForeground=${rgb3}
+inactiveBackground=${rgb2}
+inactiveForeground=${rgb3}
+`;
+
+            const blob = new Blob([colorScheme], { type: "text/plain" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "CustomColorScheme.colors";
+            link.click();
+        }
+    </script>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

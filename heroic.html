@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Heroic Theme Builder</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700&display=swap" />
+  <style>
+    :root {
+      --preview-accent: #4caf50;
+      --preview-bg: #1e352a;
+      --preview-surface: #2c4d3a;
+      --preview-text: #e8f5e9;
+      --preview-danger: #ef5350;
+      --preview-font: 'Fira Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--preview-font);
+      margin: 0;
+      background: #121212;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem 2rem;
+      gap: 1.5rem;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1a1a1a;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .app-header .logo {
+      color: var(--preview-accent);
+    }
+
+    .app-header a {
+      color: var(--preview-text);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .app-header a:hover {
+      background: var(--preview-accent-overlay, #81c784cc);
+    }
+
+    .app-footer {
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      color: #ccc;
+      border-top: 1px solid #333;
+      margin-top: auto;
+    }
+
+    .app-footer a {
+      color: #8ef8b5;
+      text-decoration: none;
+    }
+
+    .app-footer a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      margin: 0 0 1rem 0;
+      text-align: center;
+    }
+
+    .container {
+      display: flex;
+      gap: 2rem;
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .controls {
+      flex: 1;
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 300px;
+    }
+
+    .controls label {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.3rem;
+      user-select: none;
+    }
+
+    .controls input[type="color"],
+    .controls input[type="text"],
+    .controls select {
+      width: 100%;
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      background: #2c2c2c;
+      color: white;
+      transition: background 0.2s ease;
+    }
+
+    .controls input[type="color"] {
+      padding: 0;
+      height: 2.5rem;
+      cursor: pointer;
+    }
+
+    .controls input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    .controls input[type="color"]::-webkit-color-swatch {
+      border-radius: 5px;
+    }
+
+    .controls input[type="text"]:focus,
+    .controls select:focus {
+      outline: 2px solid var(--preview-accent);
+      background: #3a3a3a;
+    }
+
+    .preview-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      min-width: 300px;
+    }
+
+    .preview {
+      background: var(--preview-bg);
+      color: var(--preview-text);
+      border-radius: 8px;
+      box-shadow: 0 0 8px #0009;
+      flex-shrink: 0;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .navbar {
+      background: var(--preview-surface);
+      padding: 1rem;
+      font-weight: bold;
+      user-select: none;
+      width: 33%;
+      min-width: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .preview-content {
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .button {
+      background: var(--preview-accent);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      transition: background 0.2s ease;
+      user-select: none;
+    }
+
+    .button:hover {
+      background: var(--preview-accent-overlay, #81c784cc);
+    }
+
+    .danger {
+      background: var(--preview-danger);
+    }
+
+    .danger:hover {
+      background: #d94d4d;
+    }
+
+    .css-output {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .css-output h2 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 1rem;
+      font-family: monospace;
+      border-radius: 6px;
+      background: #1e1e1e;
+      color: #8ef8b5;
+      border: 1px solid #333;
+      resize: none;
+      flex-grow: 1;
+    }
+
+    .copy-button {
+      margin-top: 0.5rem;
+      padding: 0.6rem 1rem;
+      background: #336b6d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      align-self: flex-start;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+
+    .copy-button:hover {
+      background: #559b9d;
+    }
+
+    @media (max-width: 850px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .preview-area {
+        min-width: auto;
+      }
+
+      .preview {
+        flex-direction: column;
+      }
+
+      .navbar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="logo">🛡️ Heroic Theme Builder</div>
+    <nav>
+      <a href="https://github.com/zachvlat/heroic-theme-builder" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="controls">
+      <label for="themeName">Theme Class Name</label>
+      <input type="text" id="themeName" value="my-green-theme" autocomplete="off" />
+
+      <label for="accentColor">Accent Color</label>
+      <input type="color" id="accentColor" value="#4caf50" />
+
+      <label for="bgColor">Background Color</label>
+      <input type="color" id="bgColor" value="#1e352a" />
+
+      <label for="surfaceColor">Surface Color</label>
+      <input type="color" id="surfaceColor" value="#2c4d3a" />
+
+      <label for="textColor">Text Color</label>
+      <input type="color" id="textColor" value="#e8f5e9" />
+
+      <label for="dangerColor">Danger Color</label>
+      <input type="color" id="dangerColor" value="#ef5350" />
+
+      <label for="fontSelect">Font</label>
+      <select id="fontSelect" aria-label="Font selection">
+        <option value="Fira Sans" selected>Fira Sans</option>
+        <option value="Roboto">Roboto</option>
+        <option value="Inter">Inter</option>
+        <option value="Ubuntu">Ubuntu</option>
+        <option value="Poppins">Poppins</option>
+        <option value="Lato">Lato</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Open Sans">Open Sans</option>
+        <option value="Raleway">Raleway</option>
+        <option value="Source Sans Pro">Source Sans Pro</option>
+        <option value="Merriweather">Merriweather</option>
+      </select>
+    </div>
+
+    <div class="preview-area">
+      <div class="preview" aria-live="polite" aria-label="Theme preview">
+        <div class="navbar">Navigation Bar</div>
+        <div class="preview-content">
+          <p>This is some example body text inside your theme preview.</p>
+          <button class="button">Accent Button</button>
+          <button class="button danger">Danger Button</button>
+        </div>
+      </div>
+
+      <div class="css-output">
+        <h2>Generated CSS</h2>
+        <textarea id="cssOutput" readonly aria-label="Generated CSS code"></textarea>
+        <button class="copy-button" onclick="copyCSS()">Copy CSS</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const themeNameInput = document.getElementById('themeName');
+    const accentColor = document.getElementById('accentColor');
+    const bgColor = document.getElementById('bgColor');
+    const surfaceColor = document.getElementById('surfaceColor');
+    const textColor = document.getElementById('textColor');
+    const dangerColor = document.getElementById('dangerColor');
+    const fontSelect = document.getElementById('fontSelect');
+    const cssOutput = document.getElementById('cssOutput');
+
+    function hexToOpacity(hex, opacity = 0.8) {
+      hex = hex.replace('#', '');
+      let r = parseInt(hex.substring(0, 2), 16);
+      let g = parseInt(hex.substring(2, 4), 16);
+      let b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r},${g},${b},${opacity})`;
+    }
+
+    function updateTheme() {
+      const accent = accentColor.value;
+      const bg = bgColor.value;
+      const surface = surfaceColor.value;
+      const text = textColor.value;
+      const danger = dangerColor.value;
+      const font = fontSelect.value;
+      const themeClass = themeNameInput.value.trim() || 'custom-theme';
+      document.documentElement.style.setProperty('--preview-accent', accent);
+      document.documentElement.style.setProperty('--preview-bg', bg);
+      document.documentElement.style.setProperty('--preview-surface', surface);
+      document.documentElement.style.setProperty('--preview-text', text);
+      document.documentElement.style.setProperty('--preview-danger', danger);
+      document.documentElement.style.setProperty('--preview-font', `'${font}', sans-serif`);
+      document.documentElement.style.setProperty('--preview-accent-overlay', hexToOpacity(accent, 0.8));
+      const existingLink = document.getElementById('font-link');
+      if (existingLink) existingLink.remove();
+      const link = document.createElement('link');
+      link.id = 'font-link';
+      link.rel = 'stylesheet';
+      link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/\s/g, '+')}:wght@400;700&display=swap`;
+      document.head.appendChild(link);
+      cssOutput.value = `
+body.${themeClass} {
+  font-family: '${font}', sans-serif;
+
+  --accent: ${accent};
+  --accent-overlay: ${hexToOpacity(accent, 0.8)};
+  --navbar-accent: ${text};
+
+  --background: ${bg};
+  --body-background: ${bg};
+  --background-darker: ${bg};
+  --current-background: ${bg};
+  --navbar-background: ${surface};
+  --navbar-active-background: ${surface};
+
+  --input-background: ${surface};
+  --modal-background: ${surface};
+  --modal-border: ${surface};
+
+  --success: ${accent};
+  --success-hover: ${accent};
+  --primary: ${accent};
+  --primary-hover: ${accent};
+  --danger: ${danger};
+  --danger-hover: ${danger};
+
+  --text-title: ${text};
+  --icons-background: ${surface};
+  --action-icon: ${text};
+  --action-icon-hover: ${accent};
+  --action-icon-active: ${accent};
+  --icon-disabled: #708c76;
+}
+      `.trim();
+    }
+
+    function copyCSS() {
+      cssOutput.select();
+      document.execCommand('copy');
+      alert('CSS copied to clipboard!');
+    }
+    [
+      themeNameInput,
+      accentColor,
+      bgColor,
+      surfaceColor,
+      textColor,
+      dangerColor,
+      fontSelect
+    ].forEach(el => el.addEventListener('input', updateTheme));
+    updateTheme();
+  </script>
+  <footer class="app-footer">
+    <p>Created by <a href="https://github.com/zachvlat/" target="_blank" rel="noopener noreferrer">zachvlat</a> · GNU v3 License</p>
+  </footer>
+</body>
+
+</html>

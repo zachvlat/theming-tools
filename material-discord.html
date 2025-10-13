@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Discord Accent HSL Theme Builder</title>
+  <style>
+    :root{
+      --accent-hue: 100;
+      --accent-saturation: 65%;
+      --accent-lightness: 61%;
+
+      --accent-color: hsl(var(--accent-hue) var(--accent-saturation) var(--accent-lightness));
+      --accent-foreground: hsl(0 0% 100%);
+
+      --bg: #0f1115;
+      --surface: #121217;
+      --muted: #9496a0;
+      --msg-bg: #15161a;
+      --radius: 12px;
+    }
+
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    body{margin:0;background:#0b0c0f;color:#e6e7eb;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
+    .app{width:980px;max-width:100%;display:grid;grid-template-columns:360px 1fr;gap:20px}
+
+    .panel{background:linear-gradient(180deg,#0c0d11,#101116);padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,0.6);}
+    h1{font-size:18px;margin:0 0 10px}
+    p.lead{color:var(--muted);margin:0 0 16px;font-size:13px}
+
+    .control{margin-bottom:12px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:#cfd1d8}
+    input[type=range]{width:100%}
+    .row{display:flex;gap:8px;align-items:center}
+    .value{min-width:64px;padding:8px 10px;border-radius:8px;background:#0b0b0d;border:1px solid rgba(255,255,255,0.04);text-align:center}
+
+    .swatch{height:48px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-weight:600;transition: background 0.3s ease;}
+
+    .actions{display:flex;gap:8px;margin-top:12px}
+    button{background:var(--accent-color);color:var(--accent-foreground);border:0;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+    button.secondary{background:#232428;color:#cfcfd3}
+
+    .preview{background:linear-gradient(180deg,#0b0c10,#0f1116);padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,0.6);display:flex;gap:14px}
+    .sidebar{width:72px;background:linear-gradient(180deg,#0f1114,#0d0e12);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:10px}
+    .server{height:44px;border-radius:12px;background:linear-gradient(180deg,#0d0e11,#0b0c0f);display:flex;align-items:center;justify-content:center;color:#ddd;font-weight:700}
+    .content{flex:1;display:flex;flex-direction:column}
+    .topbar{height:56px;border-radius:10px;background:linear-gradient(180deg,#0e1014,#101216);display:flex;align-items:center;justify-content:space-between;padding:8px 12px}
+    .accent-pill{background:var(--accent-color);color:var(--accent-foreground);padding:6px 10px;border-radius:999px;font-weight:700}
+
+    .messages{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+    .msg{max-width:70%;background:var(--msg-bg);padding:10px 12px;border-radius:var(--radius);box-shadow:inset 0 -1px 0 rgba(255,255,255,0.01)}
+    .msg .meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+
+    .composer{height:64px;background:#0d0e12;border-radius:10px;padding:10px;display:flex;gap:10px;align-items:center}
+    .compose-input{flex:1;background:transparent;border:1px dashed rgba(255,255,255,0.03);padding:10px;border-radius:8px;color:#ddd}
+
+    footer.note{margin-top:10px;color:#9aa0ad;font-size:13px}
+
+    @media (max-width:920px){.app{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="panel">
+      <h1>Discord Theme — Accent HSL Builder</h1>
+      <p class="lead">Adjust <code>--accent-hue</code>, <code>--accent-saturation</code>, and <code>--accent-lightness</code>.</p>
+
+      <div class="control">
+        <label for="hueRange">Accent Hue — <span id="hueVal">100</span>°</label>
+        <input id="hueRange" type="range" min="0" max="360" value="100" />
+      </div>
+
+      <div class="control">
+        <label for="satRange">Accent Saturation — <span id="satVal">65</span>%</label>
+        <input id="satRange" type="range" min="0" max="100" value="65" />
+      </div>
+
+      <div class="control">
+        <label for="ligRange">Accent Lightness — <span id="ligVal">61</span>%</label>
+        <input id="ligRange" type="range" min="0" max="100" value="61" />
+      </div>
+
+      <div class="control row">
+        <div style="flex:1">
+          <label>Hex</label>
+          <div class="value" id="hexVal">#c9e86b</div>
+        </div>
+        <div style="width:120px">
+          <label>Preview</label>
+          <div class="swatch" id="swatch"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="copyCss">Copy theme CSS</button>
+        <button id="downloadCss" class="secondary">Download .css</button>
+      </div>
+
+      <p class="note">The generated CSS modifies <code>--accent-hue</code>, <code>--accent-saturation</code>, and <code>--accent-lightness</code>. Paste into your BetterDiscord theme.</p>
+    </div>
+
+    <div class="preview" aria-hidden="true">
+      <div class="sidebar">
+        <div class="server">CK</div>
+        <div class="server">M</div>
+        <div class="server">S</div>
+      </div>
+
+      <div class="content">
+        <div class="topbar">
+          <div style="display:flex;gap:10px;align-items:center">
+            <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.15))"></div>
+            <div style="font-weight:700">#material-discord</div>
+          </div>
+          <div class="accent-pill">Accent</div>
+        </div>
+
+        <div class="messages">
+          <div class="msg"><div class="meta">SoiCoco • today</div><div>Hey — this is what your accent looks like on buttons and highlights.</div></div>
+          <div class="msg"><div class="meta">Someone • 2:01 PM</div><div>Another message to show bubble contrast and accent usage.</div></div>
+        </div>
+
+        <div class="composer">
+          <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-color)"></div>
+          <div class="compose-input">Message #general</div>
+          <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-color)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hueRange = document.getElementById('hueRange');
+    const hueVal = document.getElementById('hueVal');
+    const satRange = document.getElementById('satRange');
+    const satVal = document.getElementById('satVal');
+    const ligRange = document.getElementById('ligRange');
+    const ligVal = document.getElementById('ligVal');
+    const hexVal = document.getElementById('hexVal');
+    const swatch = document.getElementById('swatch');
+    const copyBtn = document.getElementById('copyCss');
+    const downloadBtn = document.getElementById('downloadCss');
+
+    function hslToHex(h,s,l){
+      s/=100; l/=100;
+      const k = n => (n + h/30) % 12;
+      const a = s * Math.min(l,1-l);
+      const f = n => Math.round(255*(l - a * Math.max(Math.min(k(n)-3,9-k(n),1),-1))).toString(16).padStart(2,'0');
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    function updateUI(){
+      const h = parseInt(hueRange.value,10);
+      const s = parseInt(satRange.value,10);
+      const l = parseInt(ligRange.value,10);
+
+      document.documentElement.style.setProperty('--accent-hue', h);
+      document.documentElement.style.setProperty('--accent-saturation', s+'%');
+      document.documentElement.style.setProperty('--accent-lightness', l+'%');
+
+      hueVal.textContent = h;
+      satVal.textContent = s;
+      ligVal.textContent = l;
+
+      const hex = hslToHex(h,s,l);
+      hexVal.textContent = hex;
+      swatch.style.background = `hsl(${h} ${s}% ${l}%)`;
+    }
+
+    function generateCss(){
+      const h = hueRange.value;
+      const s = satRange.value;
+      const l = ligRange.value;
+
+      return `/* Generated theme — modifies accent HSL */
+@import url(https://capnkitten.github.io/BetterDiscord/Themes/Material-Discord/css/source.css);
+@import url(https://capnkitten.github.io/BetterDiscord/Themes/Material-Discord/css/addons/material-you/source.css);
+
+:root {
+  --accent-hue: ${h};
+  --accent-saturation: ${s}%;
+  --accent-lightness: ${l}%;
+  --accent-text-color: hsl(0,0%,100%);
+  --accent-button-action: hsl(0,0%,100%);
+}`;
+    }
+
+    [hueRange,satRange,ligRange].forEach(slider => slider.addEventListener('input', updateUI));
+
+    copyBtn.addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(generateCss());
+        copyBtn.textContent='Copied ✓';
+        setTimeout(()=>copyBtn.textContent='Copy theme CSS',1200);
+      }catch{
+        copyBtn.textContent='Copy failed';
+        setTimeout(()=>copyBtn.textContent='Copy theme CSS',1200);
+      }
+    });
+
+    downloadBtn.addEventListener('click', ()=>{
+      const blob = new Blob([generateCss()],{type:'text/css'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `material-discord-accent-hsl-${hueRange.value}-${satRange.value}-${ligRange.value}.css`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theming Tools Hub</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --surface-color: #1E1E1E;
+      --accent-color: #BB86FC;
+      --text-color: #FFFFFF;
+      --text-secondary: #B3B3B3;
+      --hover-color: #2A2A2A;
+      --transition-speed: 0.3s;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 2rem;
+      text-align: center;
+      background-color: var(--surface-color);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tool-card {
+      background-color: var(--surface-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      transition: transform var(--transition-speed), background-color var(--transition-speed);
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-5px);
+      background-color: var(--hover-color);
+    }
+
+    .tool-title {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-color);
+    }
+
+    .tool-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    footer {
+      padding: 1rem;
+      text-align: center;
+      background-color: var(--surface-color);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Theming Tools Hub</h1>
+    <p>Create and customize your favorite themes with ease</p>
+  </header>
+
+  <main>
+    <a class="tool-card" href="heroic.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">Heroic Theme Builder</div>
+      <div class="tool-desc">Craft themes for Heroic Launcher with precision and style.</div>
+    </a>
+
+    <a class="tool-card" href="gradience.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">Gradience Theme Builder</div>
+      <div class="tool-desc">Design and preview elegant Gradience themes effortlessly.</div>
+    </a>
+
+    <a class="tool-card" href="retrobar.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">Retrobar Theme Generator</div>
+      <div class="tool-desc">Recreate nostalgic looks for Retrobar with custom palettes.</div>
+    </a>
+
+    <a class="tool-card" href="kde.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">KDE Color Scheme Generator</div>
+      <div class="tool-desc">Generate beautiful KDE color schemes in just a few clicks.</div>
+    </a>
+
+    <a class="tool-card" href="material-discord.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">Material Discord</div>
+      <div class="tool-desc">Apply Material Design magic to your Discord client themes.</div>
+    </a>
+
+    <a class="tool-card" href="vscode.html" target="_blank" rel="noopener noreferrer">
+      <div class="tool-title">VSCode Theme Generator</div>
+      <div class="tool-desc">Design sleek and modern themes for Visual Studio Code.</div>
+    </a>
+  </main>
+
+  <footer>
+    © 2025 Theming Tools — Built with 💜 Dark Material Design
+  </footer>
+</body>
+</html>
