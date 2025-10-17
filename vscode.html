@@ -1,160 +1,516 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>1-Color VSCode Theme Generator</title>
-  <style>
-    body {
-      background: #121212;
-      color: #eee;
-      font-family: sans-serif;
-      padding: 2rem;
-      max-width: 600px;
-      margin: auto;
-    }
-    label {
-      font-size: 1.1rem;
-      display: block;
-      margin-bottom: 1rem;
-    }
-    input[type=color] {
-      width: 80px;
-      height: 40px;
-      border: none;
-      cursor: pointer;
-    }
-    textarea {
-      width: 100%;
-      height: 400px;
-      margin-top: 1rem;
-      background: #222;
-      color: #eee;
-      padding: 1rem;
-      font-family: monospace;
-      font-size: 0.9rem;
-      border: none;
-      resize: vertical;
-    }
-    h1 {
-      text-align: center;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>1-Color VSCode Theme Generator</title>
+<style>
+  :root{
+    --bg:#0f1220;
+    --panel:#161719;
+    --muted:#bfc8cf;
+    --accent:#FFB74D;
+  }
+  /* Layout */
+  body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(180deg,#0b0b0d 0%, #121216 100%);
+    color:#e6eef6;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    padding:24px;
+    box-sizing:border-box;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  .container{
+    width:100%;
+    max-width:1000px;
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:20px;
+  }
+
+  /* Left panel: controls */
+  .panel{
+    background:rgba(255,255,255,0.03);
+    border-radius:12px;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  h1{
+    margin:0 0 12px 0;
+    font-size:1.1rem;
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  label {
+    display:block;
+    font-size:0.95rem;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  .controls{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+  input[type="color"]{
+    width:56px;
+    height:40px;
+    border-radius:8px;
+    border:none;
+    padding:0;
+    cursor:pointer;
+  }
+  .small{
+    font-size:0.85rem;
+    color: #cbd6dd;
+  }
+  .row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+    margin:10px 0;
+  }
+  .btn{
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--muted);
+    padding:8px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:0.95rem;
+  }
+  .btn.primary{
+    background:linear-gradient(180deg,var(--accent), #e58b2a);
+    color:#111;
+    border:none;
+  }
+
+  /* Right: preview + output */
+  .preview{
+    background:linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.25));
+    border-radius:12px;
+    padding:18px;
+    min-height:520px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .preview-top{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .swatches{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .swatch{
+    width:64px;
+    height:48px;
+    border-radius:6px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.03);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    color:var(--panel);
+    font-weight:600;
+  }
+
+  .editor-mock{
+    background:#0b0b0c;
+    border-radius:8px;
+    padding:12px;
+    min-height:270px;
+    font-family: "SFMono-Regular", Menlo, Monaco, "Courier New", monospace;
+    font-size:13px;
+    color:#e6eef6;
+    display:flex;
+    gap:12px;
+  }
+  .gutter{
+    width:48px;
+    color:#7f8a92;
+    text-align:right;
+    padding-right:8px;
+    border-right:1px solid rgba(255,255,255,0.02);
+  }
+  .code{
+    flex:1;
+    padding-left:12px;
+  }
+  .token.keyword{ color:#C792EA; }
+  .token.string{ color:#C3E88D; }
+  .token.tag{ color:#80CBC4; }
+  .token.attr{ color:var(--accent); font-weight:600;}
+  .token.number{ color:#F78C6C;}
+  .token.var{ color:#F07178;}
+
+  textarea#output{
+    width:100%;
+    height:160px;
+    background:#081015;
+    color:#e6eef6;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.03);
+    padding:12px;
+    font-family: monospace;
+    font-size:13px;
+    resize:vertical;
+  }
+  .controls-row{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  footer.small{
+    color:#9aa6b1;
+    font-size:0.82rem;
+  }
+
+  /* responsive */
+  @media (max-width:880px){
+    .container{ grid-template-columns:1fr; padding:6px;}
+    .editor-mock{ flex-direction:column; }
+    .gutter{ text-align:left; border-right:none; padding-left:0; }
+  }
+
+</style>
 </head>
 <body>
+  <div class="container">
+    <div class="panel" aria-labelledby="title">
+      <h1 id="title">🖌️ 1-Color VSCode Theme Generator</h1>
 
-<h1>🖌️ 1-Color VSCode Theme Generator</h1>
+      <label for="baseColor">Pick your base color</label>
+      <div class="controls">
+        <input id="baseColor" type="color" value="#b22222" aria-label="Base color">
+        <div>
+          <div class="small">Base: <span id="baseHex">#b22222</span></div>
+          <div class="small">Preview accent: <span id="accentPreview">#FFB74D</span></div>
+        </div>
+      </div>
 
-<label>
-  Pick your base color:
-  <input type="color" id="baseColor" value="#b22222">
-</label>
+      <div class="row">
+        <label class="small">Generate options</label>
+      </div>
 
-<textarea id="output" readonly></textarea>
+      <div class="row controls-row" style="margin-bottom:12px;">
+        <button class="btn" id="copyBtn">Copy JSON</button>
+        <button class="btn primary" id="downloadBtn">Download JSON</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+
+      <label for="themeName" class="small">Theme file name</label>
+      <input id="themeName" type="text" value="vscode-color-customizations" style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted);margin-bottom:12px;">
+
+      <label class="small">Generated theme JSON</label>
+      <textarea id="output" readonly aria-live="polite"></textarea>
+
+      <div style="margin-top:10px;">
+        <footer class="small">Exports a JSON object you can paste into `"workbench.colorCustomizations"` in your `settings.json` or save as a `.json` theme file.</footer>
+      </div>
+    </div>
+
+    <div class="preview">
+      <div class="preview-top">
+        <div>
+          <div class="small">Derived swatches</div>
+          <div class="swatches" id="swatches"></div>
+        </div>
+        <div style="margin-left:auto; text-align:right;">
+          <div class="small">Unique colors: <strong id="uniqueCount">0</strong></div>
+          <div class="small">Alpha support: <strong>RRGGBBAA</strong></div>
+        </div>
+      </div>
+
+      <div class="editor-mock" id="editorMock" role="img" aria-label="Theme preview">
+        <div class="gutter" id="gutter">1<br>2<br>3<br>4<br>5<br>6</div>
+        <div class="code" id="code">
+          <div><span class="token.keyword">function</span> <span class="token.var">hello</span>() {</div>
+          <div>&nbsp;&nbsp;<span class="token.keyword">const</span> <span class="token.var">s</span> = <span class="token.string">"hello"</span>;</div>
+          <div>&nbsp;&nbsp;<span class="token.keyword">return</span> <span class="token.tag">&lt;div</span> <span class="token.attr">class</span>=<span class="token.string">"hi"</span><span class="token.tag">&gt;</span>42<span class="token.tag">&lt;/div&gt;</span>;</div>
+          <div>}</div>
+        </div>
+      </div>
+
+      <label class="small">Live JSON (editable preview)</label>
+      <textarea id="liveOutput" spellcheck="false"></textarea>
+    </div>
+  </div>
 
 <script>
-function hexToRgb(hex) {
-  hex = hex.replace('#', '');
-  if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
-  const bigint = parseInt(hex, 16);
-  return {
-    r: (bigint >> 16) & 255,
-    g: (bigint >> 8) & 255,
-    b: bigint & 255
-  };
-}
+/* -------------------------
+   Color utilities
+   ------------------------- */
 
-function rgbToHex(r, g, b) {
-  return '#' + [r, g, b].map(x => {
-    const hex = x.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
+function hexToRgb(hex){
+  hex = String(hex).replace('#','').trim();
+  if(hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  if(!/^[0-9a-fA-F]{6}$/.test(hex)) return {r:0,g:0,b:0};
+  const bigint = parseInt(hex,16);
+  return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+}
+function rgbToHex(r,g,b){
+  return '#' + [r,g,b].map(v=>{
+    const hv = Math.round(Math.max(0, Math.min(255, v))).toString(16);
+    return hv.length === 1 ? '0'+hv : hv;
   }).join('');
 }
-
-function adjust(color, percent) {
-  const { r, g, b } = hexToRgb(color);
-  const newR = Math.min(255, Math.max(0, r + percent));
-  const newG = Math.min(255, Math.max(0, g + percent));
-  const newB = Math.min(255, Math.max(0, b + percent));
-  return rgbToHex(newR, newG, newB);
+// Shade: percent -100..100 (negative => toward black, positive => toward white)
+function shade(hex, percent){
+  const {r,g,b} = hexToRgb(hex);
+  const p = Math.max(-100, Math.min(100, percent));
+  const t = p < 0 ? 0 : 255;
+  const abs = Math.abs(p)/100;
+  const R = Math.round((t - r) * abs + r);
+  const G = Math.round((t - g) * abs + g);
+  const B = Math.round((t - b) * abs + b);
+  return rgbToHex(R,G,B);
 }
-
-function alphaHex(color, alpha) {
-  const { r, g, b } = hexToRgb(color);
+// produce #RRGGBBAA
+function alphaHex(hex, alpha){
+  alpha = Math.max(0, Math.min(1, alpha));
+  const {r,g,b} = hexToRgb(hex);
   const a = Math.round(alpha * 255);
-  return (
-    '#' +
-    [r, g, b, a].map((x) => {
-      const hex = x.toString(16);
-      return hex.length === 1 ? '0' + hex : hex;
-    }).join('')
-  );
+  const ah = a.toString(16).padStart(2,'0');
+  return rgbToHex(r,g,b) + ah;
 }
 
-function generateTheme(base) {
+/* -------------------------
+   Theme generation logic
+   ------------------------- */
+
+function generateTheme(base){
+  // We produce a mapping similar to what you used but deterministic percentages
   return {
-    "editor.background": adjust(base, -80),
-    "editor.foreground": adjust(base, 100),
+    "editor.background": shade(base, -80),
+    "editor.foreground": shade(base, 85),
     "editorCursor.foreground": base,
-    "editor.lineHighlightBackground": adjust(base, -60),
+    "editor.lineHighlightBackground": shade(base, -60),
     "editor.selectionBackground": alphaHex(base, 0.4),
     "editor.inactiveSelectionBackground": alphaHex(base, 0.2),
     "editor.selectionHighlightBackground": alphaHex(base, 0.25),
-    "editorLineNumber.foreground": adjust(base, 60),
-    "editorLineNumber.activeForeground": adjust(base, 100),
-    "statusBar.background": adjust(base, -90),
-    "statusBar.foreground": adjust(base, 100),
-    "activityBar.background": adjust(base, -80),
-    "activityBar.foreground": adjust(base, 100),
-    "sideBar.background": adjust(base, -85),
-    "sideBar.foreground": adjust(base, 60),
-    "tab.activeBackground": adjust(base, -75),
-    "tab.activeForeground": adjust(base, 120),
-    "tab.inactiveBackground": adjust(base, -85),
-    "tab.inactiveForeground": adjust(base, 50),
-    "titleBar.activeBackground": adjust(base, -75),
-    "titleBar.activeForeground": adjust(base, 120),
-    "titleBar.inactiveBackground": adjust(base, -90),
-    "titleBar.inactiveForeground": adjust(base, 50),
+    "editorLineNumber.foreground": shade(base, 35),
+    "editorLineNumber.activeForeground": shade(base, 90),
+
+    "statusBar.background": shade(base, -88),
+    "statusBar.foreground": shade(base, 95),
+
+    "activityBar.background": shade(base, -80),
+    "activityBar.foreground": shade(base, 95),
+
+    "sideBar.background": shade(base, -85),
+    "sideBar.foreground": shade(base, 60),
+
+    "tab.activeBackground": shade(base, -75),
+    "tab.activeForeground": shade(base, 95),
+    "tab.inactiveBackground": shade(base, -88),
+    "tab.inactiveForeground": shade(base, 38),
+
+    "titleBar.activeBackground": shade(base, -75),
+    "titleBar.activeForeground": shade(base, 95),
+    "titleBar.inactiveBackground": shade(base, -90),
+    "titleBar.inactiveForeground": shade(base, 45),
+
     "button.background": base,
     "button.foreground": "#ffffff",
-    "button.hoverBackground": adjust(base, 20),
-    "button.border": adjust(base, -30),
-    "list.activeSelectionBackground": adjust(base, -60),
+    "button.hoverBackground": shade(base, 16),
+    "button.border": shade(base, -30),
+
+    "list.activeSelectionBackground": shade(base, -60),
     "list.activeSelectionForeground": "#ffffff",
-    "list.hoverBackground": adjust(base, -50),
-    "list.hoverForeground": adjust(base, 100),
-    "list.inactiveSelectionBackground": adjust(base, -70),
-    "list.inactiveSelectionForeground": adjust(base, 80),
-    "list.focusBackground": adjust(base, -45),
-    "list.focusForeground": "#ffffff",
-    "tree.indentGuidesStroke": adjust(base, -40),
-    "tree.tableColumnsBorder": adjust(base, -60),
-    "tab.hoverBackground": adjust(base, -50),
-    "tab.hoverForeground": "#ffffff",
-    "tab.border": adjust(base, -60),
+    "list.hoverBackground": shade(base, -50),
+    "list.hoverForeground": shade(base, 95),
+
+    "panel.background": shade(base, -80),
+    "panel.border": shade(base, -60),
+    "panelTitle.activeBorder": base,
+    "panelTitle.activeForeground": shade(base, 95),
+    "panelTitle.inactiveForeground": shade(base, 60),
+
     "tab.activeBorder": base,
     "tab.activeBorderTop": base,
-    "editorGroupHeader.tabsBackground": adjust(base, -70),
-    "sideBarSectionHeader.background": adjust(base, -65),
-    "sideBarSectionHeader.foreground": adjust(base, 100),
-    "editorGroup.border": adjust(base, -60),
-    "panel.background": adjust(base, -80),
-    "panel.border": adjust(base, -60),
-    "panelTitle.activeBorder": base,
-    "panelTitle.activeForeground": adjust(base, 100),
-    "panelTitle.inactiveForeground": adjust(base, 60)
+
+    "editorWhitespace.foreground": shade(base, -60),
+
+    // some tree / list helpers
+    "tree.indentGuidesStroke": shade(base, -40),
+    "tree.tableColumnsBorder": shade(base, -60),
+
+    // semantic small tokens
+    "editorTokenColorCustomizations": {
+      "textMateRules": [
+        { "scope": ["entity.name.tag"], "settings": {"foreground": shade(base, 25)} },
+        { "scope": ["entity.other.attribute-name"], "settings": {"foreground": base} },
+        { "scope": ["string.quoted.double", "string.quoted.single"], "settings": {"foreground": shade(base, 70)} },
+        { "scope": ["keyword","storage.type"], "settings": {"foreground": shade(base, -40)} },
+        { "scope": ["variable","parameter"], "settings": {"foreground": shade(base, -10)} },
+        { "scope": ["comment"], "settings": {"foreground": shade(base, 60)} },
+        { "scope": ["constant.numeric"], "settings": {"foreground": shade(base, 30)} }
+      ]
+    }
   };
 }
 
-function update() {
-  const baseColor = document.getElementById("baseColor").value;
-  const theme = generateTheme(baseColor);
-  document.getElementById("output").value = JSON.stringify(theme, null, 2);
+/* -------------------------
+   UI wiring
+   ------------------------- */
+
+const baseInput = document.getElementById('baseColor');
+const baseHexSpan = document.getElementById('baseHex');
+const accentPreview = document.getElementById('accentPreview');
+const output = document.getElementById('output');
+const liveOutput = document.getElementById('liveOutput');
+const swatches = document.getElementById('swatches');
+const uniqueCount = document.getElementById('uniqueCount');
+const editorMock = document.getElementById('editorMock');
+const gutter = document.getElementById('gutter');
+const code = document.getElementById('code');
+const copyBtn = document.getElementById('copyBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const resetBtn = document.getElementById('resetBtn');
+const themeNameInput = document.getElementById('themeName');
+
+function collectUniqueColors(obj){
+  const set = new Set();
+  function walk(v){
+    if(typeof v === 'string') set.add(v.toLowerCase());
+    else if(Array.isArray(v)) v.forEach(walk);
+    else if(typeof v === 'object' && v !== null) Object.values(v).forEach(walk);
+  }
+  walk(obj);
+  return Array.from(set);
 }
 
-document.getElementById("baseColor").addEventListener("input", update);
-update();
-</script>
+function renderSwatches(list){
+  swatches.innerHTML = '';
+  list.forEach(hex => {
+    const d = document.createElement('div');
+    d.className = 'swatch';
+    d.style.background = hex;
+    d.textContent = hex.toUpperCase();
+    d.title = hex.toUpperCase();
+    d.style.color = (isLight(hex) ? '#111' : '#fff');
+    swatches.appendChild(d);
+  });
+}
 
+function isLight(hex){
+  const {r,g,b} = hexToRgb(hex);
+  // luminance approximation
+  const lum = (0.2126*r + 0.7152*g + 0.0722*b);
+  return lum > 150;
+}
+
+function updateAll(){
+  const base = baseInput.value;
+  baseHexSpan.textContent = base;
+  const theme = generateTheme(base);
+  // pretty JSON for the workbench setting object
+  const json = JSON.stringify(theme, null, 2);
+  output.value = json;
+  liveOutput.value = json;
+
+  // update preview: use a few keys
+  const bg = theme['editor.background'];
+  const fg = theme['editor.foreground'];
+  const cursor = theme['editorCursor.foreground'];
+  const gutterColor = theme['editorLineNumber.foreground'] || '#7f8a92';
+
+  editorMock.style.background = bg;
+  editorMock.style.color = fg;
+  gutter.style.color = gutterColor;
+  // tokens colors for the preview code
+  document.querySelectorAll('.token.keyword').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[3].settings.foreground);
+  document.querySelectorAll('.token.string').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[2].settings.foreground);
+  document.querySelectorAll('.token.tag').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[0].settings.foreground);
+  document.querySelectorAll('.token.attr').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[1].settings.foreground);
+  document.querySelectorAll('.token.number').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[6].settings.foreground);
+  document.querySelectorAll('.token.var').forEach(el => el.style.color = theme.editorTokenColorCustomizations.textMateRules[4].settings.foreground);
+
+  // swatches & unique count
+  const uniq = collectUniqueColors(theme);
+  // order primary ones first
+  const primaryOrder = [
+    theme['editor.background'],
+    theme['editor.foreground'],
+    theme['editorCursor.foreground'],
+    theme['activityBar.background'],
+    theme['tab.activeBorder'],
+    theme['button.background']
+  ];
+  const ordered = Array.from(new Set(primaryOrder.concat(uniq))).slice(0, 18);
+  renderSwatches(ordered);
+  uniqueCount.textContent = uniq.length;
+  accentPreview.textContent = theme['tab.activeBorder'];
+
+  // sync live output to be editable
+  try { // nice formatting for the "workbench" object style
+    liveOutput.value = json;
+  } catch(e){}
+}
+
+// allow manual edits in liveOutput to reflect in the output (non-destructive)
+liveOutput.addEventListener('input', () => {
+  // attempt to parse json; if valid, use it in output and swatches
+  try{
+    const parsed = JSON.parse(liveOutput.value);
+    output.value = JSON.stringify(parsed, null, 2);
+    const uniq = collectUniqueColors(parsed);
+    renderSwatches(uniq.slice(0,18));
+    uniqueCount.textContent = uniq.length;
+  }catch(e){
+    // ignore invalid JSON while typing
+  }
+});
+
+// copy to clipboard
+copyBtn.addEventListener('click', async () => {
+  try{
+    await navigator.clipboard.writeText(output.value);
+    copyBtn.textContent = 'Copied ✓';
+    setTimeout(()=> copyBtn.textContent = 'Copy JSON', 1200);
+  }catch(e){
+    copyBtn.textContent = 'Failed';
+    setTimeout(()=> copyBtn.textContent = 'Copy JSON', 1200);
+  }
+});
+
+// download as file
+downloadBtn.addEventListener('click', () => {
+  const name = (themeNameInput.value || 'vscode-theme').replace(/[^\w\-_.]/g,'') + '.json';
+  const blob = new Blob([output.value], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+// reset
+resetBtn.addEventListener('click', () => {
+  baseInput.value = '#b22222';
+  themeNameInput.value = 'vscode-color-customizations';
+  updateAll();
+});
+
+baseInput.addEventListener('input', updateAll);
+
+// initial render
+updateAll();
+</script>
 </body>
 </html>
