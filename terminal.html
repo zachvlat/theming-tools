@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows Terminal Theme Generator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #1e1e1e;
+      color: #ddd;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+    }
+
+    .controls {
+      flex: 1;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      background: #2b2b2b;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    .controls h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #333;
+      padding: 6px 10px;
+      border-radius: 5px;
+    }
+
+    input[type="color"] {
+      border: none;
+      background: none;
+      width: 40px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 4px;
+      background: #444;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 4px;
+    }
+
+    button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #1493ff;
+    }
+
+    .preview {
+      flex: 1.5;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #444;
+    }
+
+    .terminal-header {
+      background: #222;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-body {
+      flex: 1;
+      font-family: Consolas, monospace;
+      padding: 20px;
+      white-space: pre;
+      overflow: auto;
+    }
+
+    .color-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .color-block {
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid #555;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <h2>Theme Editor</h2>
+    <label>
+      Name:
+      <input type="text" id="themeName" placeholder="Theme Name" value="Custom Theme">
+    </label>
+    <div id="colorPickers"></div>
+    <button id="downloadBtn">Download JSON</button>
+  </div>
+
+  <div class="preview">
+    <div class="terminal-header">
+      <div class="dot" style="background:#ff5f56"></div>
+      <div class="dot" style="background:#ffbd2e"></div>
+      <div class="dot" style="background:#27c93f"></div>
+      <span style="color:#aaa; margin-left:8px;">Windows Terminal Preview</span>
+    </div>
+    <div class="terminal-body" id="terminalBody">
+      <span style="color:var(--green)">PS C:\Users\User&gt;</span> <span style="color:var(--foreground)">echo Hello, world!</span>
+      <br><span style="color:var(--yellow)">Hello, world!</span>
+      <br><br><span style="color:var(--cyan)">dir</span>
+      <br><span style="color:var(--blue)">Documents</span>  <span style="color:var(--purple)">Downloads</span>  <span style="color:var(--red)">Pictures</span>
+    </div>
+  </div>
+
+  <script>
+    const colorKeys = [
+      "background", "foreground", "cursorColor", "selectionBackground",
+      "black", "red", "green", "yellow", "blue", "purple", "cyan", "white",
+      "brightBlack", "brightRed", "brightGreen", "brightYellow",
+      "brightBlue", "brightPurple", "brightCyan", "brightWhite"
+    ];
+
+    const defaults = {
+      background: "#1B130E",
+      foreground: "#E8DCC5",
+      cursorColor: "#FFD580",
+      selectionBackground: "#3A2A20",
+      black: "#000000",
+      red: "#D97A6C",
+      green: "#A3B67A",
+      yellow: "#E3B872",
+      blue: "#7AA8B7",
+      purple: "#B58AA6",
+      cyan: "#7AB7A8",
+      white: "#D8CBB9",
+      brightBlack: "#4A3F35",
+      brightRed: "#E68A7A",
+      brightGreen: "#B4C88A",
+      brightYellow: "#FFD18A",
+      brightBlue: "#8CC3D3",
+      brightPurple: "#C79BB8",
+      brightCyan: "#8AD3C3",
+      brightWhite: "#FFF4E5"
+    };
+
+    const colorPickers = document.getElementById("colorPickers");
+    const terminalBody = document.getElementById("terminalBody");
+
+    colorKeys.forEach(key => {
+      const label = document.createElement("label");
+      label.innerHTML = `
+        <span>${key}</span>
+        <input type="color" id="${key}" value="${defaults[key] || '#ffffff'}">
+      `;
+      colorPickers.appendChild(label);
+    });
+
+    function updatePreview() {
+      const colors = {};
+      colorKeys.forEach(k => {
+        colors[k] = document.getElementById(k).value;
+      });
+
+      const root = terminalBody;
+      root.style.background = colors.background;
+      root.style.color = colors.foreground;
+      root.style.setProperty("--foreground", colors.foreground);
+      root.style.setProperty("--green", colors.green);
+      root.style.setProperty("--yellow", colors.yellow);
+      root.style.setProperty("--blue", colors.blue);
+      root.style.setProperty("--purple", colors.purple);
+      root.style.setProperty("--cyan", colors.cyan);
+      root.style.setProperty("--red", colors.red);
+      root.style.setProperty("--background", colors.background);
+    }
+
+    colorKeys.forEach(k => {
+      document.getElementById(k).addEventListener("input", updatePreview);
+    });
+
+    updatePreview();
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const theme = {};
+      colorKeys.forEach(k => theme[k] = document.getElementById(k).value);
+      theme["name"] = document.getElementById("themeName").value || "Custom Theme";
+
+      const blob = new Blob([JSON.stringify(theme, null, 4)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${theme.name.replace(/\s+/g, "_")}.json`;
+      link.click();
+    });
+  </script>
+</body>
+</html>
